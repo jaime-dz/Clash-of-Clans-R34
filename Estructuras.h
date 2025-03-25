@@ -14,7 +14,7 @@ typedef struct {
 typedef struct  
 {
     char Nomb_barco [20];
-    char Id_barco; 
+    char Id_barco[5]; 
     int Tam_barco; 
 } Barcos;
 
