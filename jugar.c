@@ -16,7 +16,7 @@ void Jugar_Partida(Jugador *,int );
 int main(){
     Jugador j[2];
     Menu_Jugar(j);
-
+    
     return 0;
 }
 //Cabecera: void Menu_Jugar(Jugador *j);
