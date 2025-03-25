@@ -1,5 +1,6 @@
 #ifndef ESTRUCTURAS_H
 #define ESTRUCTURAS_H 
+#define N_JUG 2
 
 typedef struct {
     int Id_jugador;

@@ -11,7 +11,8 @@ void introducir_barco (Barcos *bar) {
     nombre[strcspn(nombre, "\n")] = 0;
     nombre[strcspn(nombre, " ")] = 0;
     strcpy(bar->Nomb_barco, nombre); 
-    bar->Id_barco = nombre[0]; 
+    bar->Id_barco[0] = nombre[0]; 
+
     printf ("\nIntroduce el size del barco: "); 
     scanf("%d",&bar->Tam_barco);  
     getchar(); 
