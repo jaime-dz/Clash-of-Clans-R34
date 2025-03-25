@@ -27,13 +27,6 @@ void escribir_barco (Barcos *bar) {
     fclose(fichero2); 
 }
 
-int main () {
-    Barcos barcos; 
-    introducir_barco (&barcos); 
-    escribir_barco (&barcos); 
-    return 0; 
-}
-
 void escribir_jugador (Jugador *jug, int n, int tam) { //La funcion escribir jugador en fichero recibe la estructura jugador y un entero, correspondiente al numero de jugadores que hay en la estructura y otro que represente el tamaño del tablero.  
     int i = 0, j = 0, k = 0; 
     FILE *fichero1; 
