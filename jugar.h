@@ -3,7 +3,7 @@
 #include "Estructuras.h"
 
 //Cabecera: void Menu_Jugar(Jugador *j);
-//Precondicion: recibe el vector de estrcutura con los datos de los jugadores
+//Precondicion: recibe el vector de estructura con los datos de los jugadores
 //Postcondicion: imprime el menu de Jugar y realiza la acción necesaria segun la opcion del usuario
 void Menu_Jugar(Jugador *);
 
@@ -31,5 +31,15 @@ void imprimir_matriz(char **,int );
 //Precondicion: recibe el vector de estructuras con los datos de ambos jugadores y la dimension de los tableros
 //Postcondicion: elimina el nº de disparos, si es ganador o no y resetea los tableros de cada jugador
 void Reiniciar_Partida(Jugador *,int );
+
+//Cabecera: void Resumen(Jugador *j,int dim);
+//Precondicion: recibe el vector de estructuras con los datos de cada jugador y sus tableros
+//Postcondicion: muestra por pantalla el resumen de la partida al acabar esta
+void Resumen(Jugador *,int );
+
+//Cabecera: void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
+//Precondicion: Recibe el vector de estructuras, la dimensión de las matrices y vectores por referencia para los contadores del nº de aguas, casillas tocadas, hundidas, vacías y el nº de barcos hundidos y restantes
+//Postcondicion: Devuelve por referencia el nº de casillas vacías, tocadas, hundidas, aguas, barcos hundidos y no hundidos
+void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
 
 #endif

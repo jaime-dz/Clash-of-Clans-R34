@@ -11,9 +11,10 @@ void inicializar_matriz(char **,int );
 void Libera_Memoria(char ***,int );
 void Reserva_Memoria(char ***,int );
 void imprimir_matriz(char **,int );
-void Resumen(Jugador *);
+void Resumen(Jugador *,int);
 void Jugar_Partida(Jugador *,int );
 void Reiniciar_Partida(Jugador *,int );
+void Contadores_Resumen(Jugador *,int ,int *,int *,int *, int *,int *, int *);
 int main(){
     int i;
     Jugador j[N_JUG];
@@ -36,7 +37,7 @@ int main(){
     return 0;
 }
 //Cabecera: void Menu_Jugar(Jugador *j);
-//Precondicion: recibe el vector de estrcutura con los datos de los jugadores
+//Precondicion: recibe el vector de estructura con los datos de los jugadores
 //Postcondicion: imprime el menu de Jugar y realiza la acción necesaria segun la opcion del usuario
 void Menu_Jugar(Jugador *j){
     int opc_menu;
@@ -57,7 +58,7 @@ void Menu_Jugar(Jugador *j){
                 Reiniciar_Partida(j,10);
                 break;
             case 3:
-                Resumen(j);
+                Resumen(j,10);
                 break;
             case 4:
                 break;
@@ -68,23 +69,77 @@ void Menu_Jugar(Jugador *j){
         }
     }while(opc_menu!=4);
 }
-//Cabecera:
+//Cabecera: void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
+//Precondicion: Recibe el vector de estructuras, la dimensión de las matrices y vectores por referencia para los contadores del nº de aguas, casillas tocadas, hundidas, vacías y el nº de barcos hundidos y restantes
+//Postcondicion: Devuelve por referencia el nº de casillas vacías, tocadas, hundidas, aguas, barcos hundidos y no hundidos
+void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest){
+    int i,l,m;
+    for(m=0;m<N_JUG;m++){
+        for(i=0;i<dim;i++){
+            for(l=0;l<dim;l++){
+                switch(j[m].Oponente[i][l]){
+                    case '*':
+                        nag[m]++;
+                        break;
+                    case '-':
+                        nvac[m]++;
+                        break;
+                    case 't':
+                        ntoc[m]++;
+                        break;
+                    case 'h':
+                        nhuna[m]++;
+                        break;
+                }
+                switch(j[m].Flota[i][l]){
+                    case 'x':
+                        nrest[m]++;
+                }
+                
+            }
+        }
+    }
+    
+    
+}
+//Cabecera: void Resumen(Jugador *j,int dim);
 //Precondicion: recibe el vector de estructuras con los datos de cada jugador y sus tableros
 //Postcondicion: muestra por pantalla el resumen de la partida al acabar esta
-void Resumen(Jugador *j){
-    int i,m,cont,fila,col;
+void Resumen(Jugador *j,int dim){
+    int i,m,n,cont=1;
+    int nvac[2]={0,0},nag[2]={0,0},ntoc[2]={0,0},nhuna[2]={0,0},nhuno[2]={0,0},nrest[2]={0,0};
+    Contadores_Resumen(j,10,nvac,nag,ntoc,nhuno,nhuna,nrest);
     printf("           |          Valor de las casillas      |         Barcos        |\n");
     printf("Jugador    |Disparos|Vacias|Agua|Tocadas|Hundidas|Hundidos|Restan|Ganador|\n");
-    /*printf("-----------|--------|------|----|-------|--------|--------|------|-------|\n");
-    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[1].Nomb_jugador,j[1].Num_disp,,,,,,j[1].Ganador);
-    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[2].Nomb_jugador,j[2].Num_disp,,,,,,j[2].Ganador);*/
+    printf("-----------|--------|------|----|-------|--------|--------|------|-------|\n");
+    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[0].Nomb_jugador,j[0].Num_disp,nvac[0],nag[0],ntoc[0],nhuna[0],nhuno,j[0].Ganador);
+    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[1].Nomb_jugador,j[1].Num_disp,nvac[1],nag[1],ntoc[1],nhuna[1],nhuno[1],j[1].Ganador);
     printf("\n\n");
     for(i=0;i<N_JUG;i++){
         printf("Jugador %d:     FLOTA                               OPONENTE\n",i+1);
-        for(m=0;m<2;m++){
-            imprimir_matriz(j[i].Flota,10);
-            printf("                ");
-            imprimir_matriz(j[i].Oponente,10);
+        printf("   |");
+        for (n = 0; n < dim; n++) printf("%2d|", n);
+        printf("     |");
+        for (n = 0; n < dim; n++) printf("%2d|", n);
+        printf("\n");
+
+        // Línea divisoria
+        printf("---+");
+        for (n = 0; n < dim; n++) printf("--+");
+        printf("     +");
+        for (n = 0; n < dim; n++) printf("--+");
+        printf("\n");
+        for(m=0;m<dim;m++){
+            printf("%2d|", m);
+            for(n=0;n<dim;n++){
+                printf(" %c|",j[i].Flota[m][n]);
+            }
+            printf("   |");
+            printf("%2d|", m);
+            for(n=0;n<dim;n++){
+                printf(" %c|",j[i].Oponente[m][n]);
+            }
+            printf("\n");
         }
         printf("\n\n");
     }
