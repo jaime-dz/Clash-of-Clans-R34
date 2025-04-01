@@ -122,8 +122,6 @@ void Resumen(Jugador *j,int dim){
         printf("     |");
         for (n = 0; n < dim; n++) printf("%2d|", n);
         printf("\n");
-
-        // Línea divisoria
         printf("---+");
         for (n = 0; n < dim; n++) printf("--+");
         printf("     +");
