@@ -1,90 +1,39 @@
-#include <stdio.h> 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "Estructuras.h"
- 
-void introducir_barco (Barcos *bar) {
-    char nombre [20]; 
-    do {
-    printf("Introduce un nombre para el barco: "); 
-    fgets (nombre, 20, stdin); } while(strlen(nombre)>20);
-    nombre[strcspn(nombre, "\n")] = 0;
-    nombre[strcspn(nombre, " ")] = 0;
-    strcpy(bar->Nomb_barco, nombre); 
-    bar->Id_barco[0] = nombre[0]; 
 
-    printf ("\nIntroduce el size del barco: "); 
-    scanf("%d",&bar->Tam_barco);  
-    getchar(); 
-}
+//Cabecera: void escribir_barco (Barcos *bar)
+//Precondicion: Recibe la estructura barcos ya inicializada
+//Postcondicion: Escribe en el fichero barcos.txt
 
-void escribir_barco (Barcos *bar) {
+void escribir_barco (Barcos *bar){  // Quiero reciclar esta funcion
     FILE *fichero2;
-    if ((fichero2=fopen("Barcos.txt","w"))==NULL) {
-        printf("Error al abrir el fichero barcos.txt"); 
+    if((fichero2=fopen("Barcos.txt","w"))==NULL){
+        printf("Error al abrir el fichero barcos.txt");
     }
-    fseek(fichero2, 0, SEEK_END); 
-    fprintf(fichero2, "%s-%c-%d\n",bar->Nomb_barco,bar->Id_barco,bar->Tam_barco);
-    fclose(fichero2); 
-}
-/*
-int main () {
-    Barcos barcos; 
-    introducir_barco (&barcos); 
-    escribir_barco (&barcos); 
-    return 0; 
-}*/
 
-void escribir_jugador (Jugador *jug, int n, int tam) { //La funcion escribir jugador en fichero recibe la estructura jugador y un entero, correspondiente al numero de jugadores que hay en la estructura y otro que represente el tamaño del tablero.  
-    int i = 0, j = 0, k = 0; 
-    FILE *fichero1; 
-    fichero1 = fopen("jugador.txt","w+"); 
+    // Necesito el mismo bucle que en la funcion de abajo y que la estructura Barcos este inicializada
+    fprintf(fichero2, "%s-%c\n",bar->Nomb_barco,bar->Id_barco);
+    fclose(fichero2);
+}
+
+//Cabecera: void escribir_jugador (Jugador *jug, int n, int tam)
+//Precondicion: inicializar la estructura jugador
+//Postcondicion: escribe en un fichero los datos de configuracion del jugador
+
+void escribir_jugador (Jugador *jug, int n, int tam, registro_configuracion* config){
+    int i = 0;
+    FILE *fichero1;
+    fichero1 = fopen("Juego.txt","w+");
     if (fichero1 == NULL) {
-        printf ("Error al abrir el fichero"); 
-        exit (1); 
+        printf ("Error al abrir el fichero");
+        exit (1);
     }
+    fprintf(fichero1, "%i-%i-%i\n", config->t_tablero, config->n_barcos_flota, config->n_tipos_barco);
     for (i = 0; i < n; i++) {
         fprintf(fichero1, "%d-%s-%i-%c-%i\n", jug[i].Id_jugador,jug[i].Nomb_jugador,jug[i].Num_disp,jug[i].Tipo_disparo,jug[i].Ganador);
-        for(j = 0; j < tam; j++) {
-            for(k = 0; k < tam; k++) {
-                if (k == 0) {
-                    fprintf(fichero1, " ( ");
-                }
-                fprintf(fichero1, " %c ",jug[i].Flota[j][k]);
-                if (k == tam - 1) {
-                    fprintf(fichero1, " ) \n");
-                }
-            }
-        }
-        for(j = 0; j < tam; j++) {
-            for(k = 0; k < tam; k++) {
-                if (k == 0) {
-                    fprintf(fichero1, " ( ");
-                }
-                fprintf(fichero1, " %c ",jug[i].Oponente[j][k]);
-                if (k == tam - 1) {
-                    fprintf(fichero1, " ) \n");
-                }
-            }
-        }
     }
     fclose(fichero1);
+    // Aqui faltan las matrices, Luis ya lo tiene programado
 }
-
-/*
-void escribir_flota (Jugador **jug, int n, char* fichero1, int tam) { //Recibe la estructura y el elemento en concreto del que hay que escribirlo   
-    int j = 0, k = 0;
-    for(j = 0; j<tam; j++) {
-        for(k = 0; k<tam; k++) {
-            if (k == 0) {
-                fprintf(fichero1, " ( ");
-            }
-            fprintf(fichero1, " %c ",jug[n].Flota[j][k]);
-            if (k == tam - 1) {
-                fprintf(fichero1, " ) \n");
-            }
-        }
-    }
-
-}
-*/
