@@ -42,4 +42,9 @@ void Resumen(Jugador *,int );
 //Postcondicion: Devuelve por referencia el nº de casillas vacías, tocadas, hundidas, aguas, barcos hundidos y no hundidos
 void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
 
+//Cabecera:void elimina(char *c1);
+//Precondicion: recibe una cadena de caracteres inicializada
+//Postcondicion: elimina el salto de línea de la cadena introducido por fgets
+void elimina(char *c1);
+
 #endif

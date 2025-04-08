@@ -11,6 +11,7 @@ void inicializar_matriz(char **,int );
 void Libera_Memoria(char ***,int );
 void Reserva_Memoria(char ***,int );
 void imprimir_matriz(char **,int );
+void elimina(char *);
 void Resumen(Jugador *,int);
 void Jugar_Partida(Jugador *,int );
 void Reiniciar_Partida(Jugador *,int );
@@ -69,11 +70,20 @@ void Menu_Jugar(Jugador *j){
         }
     }while(opc_menu!=4);
 }
+
 //Cabecera: void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
 //Precondicion: Recibe el vector de estructuras, la dimensión de las matrices y vectores por referencia para los contadores del nº de aguas, casillas tocadas, hundidas, vacías y el nº de barcos hundidos y restantes
 //Postcondicion: Devuelve por referencia el nº de casillas vacías, tocadas, hundidas, aguas, barcos hundidos y no hundidos
 void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest){
     int i,l,m;
+    for(i=0;i<N_JUG;i++){
+        nvac[i]=0;
+        nag[i]=0;
+        ntoc[i]=0;
+        nhuna[i]=0;
+        nhuno[i]=0;
+        nrest[i]=0;
+    }
     for(m=0;m<N_JUG;m++){
         for(i=0;i<dim;i++){
             for(l=0;l<dim;l++){
@@ -94,12 +104,18 @@ void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nh
                 switch(j[m].Flota[i][l]){
                     case 'x':
                         nrest[m]++;
+                        break;
+                    case 'h':
+                        nhuno[m]++;
+                        break;
                 }
-                
             }
         }
     }
-    
+    if(nrest[0]>nrest[1])
+        j[0].Ganador=1;
+    else
+        j[1].Ganador=1;
     
 }
 //Cabecera: void Resumen(Jugador *j,int dim);
@@ -107,12 +123,12 @@ void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nh
 //Postcondicion: muestra por pantalla el resumen de la partida al acabar esta
 void Resumen(Jugador *j,int dim){
     int i,m,n,cont=1;
-    int nvac[2]={0,0},nag[2]={0,0},ntoc[2]={0,0},nhuna[2]={0,0},nhuno[2]={0,0},nrest[2]={0,0};
+    int nvac[2],nag[2],ntoc[2],nhuna[2],nhuno[2],nrest[2];
     Contadores_Resumen(j,10,nvac,nag,ntoc,nhuno,nhuna,nrest);
     printf("           |          Valor de las casillas      |         Barcos        |\n");
     printf("Jugador    |Disparos|Vacias|Agua|Tocadas|Hundidas|Hundidos|Restan|Ganador|\n");
     printf("-----------|--------|------|----|-------|--------|--------|------|-------|\n");
-    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[0].Nomb_jugador,j[0].Num_disp,nvac[0],nag[0],ntoc[0],nhuna[0],nhuno,j[0].Ganador);
+    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[0].Nomb_jugador,j[0].Num_disp,nvac[0],nag[0],ntoc[0],nhuna[0],nhuno[0],j[0].Ganador);
     printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[1].Nomb_jugador,j[1].Num_disp,nvac[1],nag[1],ntoc[1],nhuna[1],nhuno[1],j[1].Ganador);
     printf("\n\n");
     for(i=0;i<N_JUG;i++){
@@ -166,7 +182,14 @@ void Reiniciar_Partida(Jugador *j,int dim){
 void Jugar_Partida(Jugador *j,int dim){
     int i,k,cont_p=1;
     char op_partida;
-
+    for(i=0;i<N_JUG;i++){
+        j[i].Num_disp=0;
+        j[i].Ganador=0;
+        printf("Introduce el nombre del jugador %d: ",i+1);
+        fgets(j[i].Nomb_jugador,20,stdin);
+        elimina(j[i].Nomb_jugador);
+        printf("\n");
+    }
     printf("Desea generar los tableros manualmente o de forma aleatoria? (m/a)\n");
     printf("->");
     scanf(" %c",&op_partida);
@@ -247,5 +270,17 @@ void inicializar_matriz(char **m,int dim){
         for(j=0;j<dim;j++){
             m[i][j]='-';
         }
+    }
+}
+//Cabecera:void elimina(char *c1);
+//Precondicion: recibe una cadena de caracteres inicializada
+//Postcondicion: elimina el salto de línea de la cadena introducido por fgets
+void elimina(char *c1){
+    int i=0;
+    while(c1[i]!='\0'){
+        if(c1[i]=='\n'){
+            c1[i]='\0';
+        }
+        i++;
     }
 }
