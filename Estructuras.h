@@ -2,6 +2,7 @@
 #define ESTRUCTURAS_H
 #include <stdlib.h>
 #include <stdio.h>
+#define N_JUG 2
 
 // Este codigo es de Luis
 

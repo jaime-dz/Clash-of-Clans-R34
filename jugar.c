@@ -3,45 +3,47 @@
 #include <string.h>
 #include "jugar.h"
 #include "Estructuras.h"
-/*#include "cargar.h"
 #include "configuracion.h"
+/*#include "cargar.h"
 #include "guardar.h"*/
-void Menu_Jugar(Jugador *);
+void Menu_Jugar(Jugador *,registro_configuracion *,int );
 void inicializar_matriz(char **,int );
 void Libera_Memoria(char ***,int );
 void Reserva_Memoria(char ***,int );
 void imprimir_matriz(char **,int );
 void elimina(char *);
-void Resumen(Jugador *,int);
-void Jugar_Partida(Jugador *,int );
-void Reiniciar_Partida(Jugador *,int );
-void Contadores_Resumen(Jugador *,int ,int *,int *,int *, int *,int *, int *);
+void Resumen(Jugador *,registro_configuracion *,int);
+void Jugar_Partida(Jugador *,registro_configuracion *,int );
+void Reiniciar_Partida(Jugador *,registro_configuracion *,int );
+void Contadores_Resumen(Jugador *,registro_configuracion *,int ,int *,int *,int *, int *,int *, int *);
 int main(){
     int i;
     Jugador j[N_JUG];
+    registro_configuracion reg;
+    borrar_configuracion(j,&reg);
     for(i=0;i<N_JUG;i++){
-        Reserva_Memoria(&(j[i].Flota),10);
-        Reserva_Memoria(&(j[i].Oponente),10);
+        Reserva_Memoria(&(j[i].Flota),reg.t_tablero);
+        Reserva_Memoria(&(j[i].Oponente),reg.t_tablero);
     }
     for(i=0;i<N_JUG;i++){
-        inicializar_matriz(j[i].Flota,10);
-        inicializar_matriz(j[i].Oponente,10);
+        inicializar_matriz(j[i].Flota,reg.t_tablero);
+        inicializar_matriz(j[i].Oponente,reg.t_tablero);
     }
-    Menu_Jugar(j);
+    Menu_Jugar(j,&reg,reg.t_tablero);
 
     for(i=0;i<N_JUG;i++){
-        Libera_Memoria(&(j[i].Flota),10);
-        Libera_Memoria(&(j[i].Oponente),10);
+        Libera_Memoria(&(j[i].Flota),reg.t_tablero);
+        Libera_Memoria(&(j[i].Oponente),reg.t_tablero);
     }
     
     system("cls");
     return 0;
 }
-//Cabecera: void Menu_Jugar(Jugador *j);
+//Cabecera: void Menu_Jugar(Jugador *j,int dim);
 //Precondicion: recibe el vector de estructura con los datos de los jugadores
 //Postcondicion: imprime el menu de Jugar y realiza la acción necesaria segun la opcion del usuario
-void Menu_Jugar(Jugador *j){
-    int opc_menu;
+void Menu_Jugar(Jugador *j,registro_configuracion *reg,int dim){
+    int opc_menu,i;
     do{
         printf("-----Jugar partida-----\n\n");
         printf("1.Jugar partida\n");
@@ -53,13 +55,14 @@ void Menu_Jugar(Jugador *j){
         fflush(stdin);
         switch(opc_menu){
             case 1:
-                Jugar_Partida(j,10);
+                Jugar_Partida(j,reg,dim);
                 break;
             case 2:
-                Reiniciar_Partida(j,10);
+                Reiniciar_Partida(j,reg,dim);
+                borrar_configuracion(j,reg);
                 break;
             case 3:
-                Resumen(j,10);
+                Resumen(j,reg,dim);
                 break;
             case 4:
                 break;
@@ -70,11 +73,57 @@ void Menu_Jugar(Jugador *j){
         }
     }while(opc_menu!=4);
 }
+//Cabecera:
+//Precondicion:
+//Postcondicion:
+void Jugar_Partida(Jugador *j,registro_configuracion *reg,int dim){
+    int i,k,cont_p=1;
+    char op_partida;
+    printf("Desea generar los tableros manualmente o de forma aleatoria? (m/a)\n");
+    printf("->");
+    scanf(" %c",&op_partida);
+    switch(op_partida){
+        case 'm':
+        case 'M':
+            printf("Ha seleccionado generar los tableros manualmente\n\n");
+            for(i=0;i<N_JUG;i++){
+                inicializar_matriz(j[i].Flota,dim);
+                inicializar_matriz(j[i].Oponente,dim);
+            }
+            for(i=0;i<N_JUG; i++){
+                printf("Jugador %d - Tablero de Flota\n", i+1);
+                imprimir_matriz(j[i].Flota, dim);
+                printf("\n");
+            
+                printf("Jugador %d - Tablero de Oponente\n", i+1);
+                imprimir_matriz(j[i].Oponente, dim);
+                printf("\n\n");
+            }
+            printf("Pulse cualquier tecla para continuar:\n");
+            printf("->");
+            if(reg->comienzo==0){
+                printf("El primer turno es para el jugador %s\n", j[0].Nomb_jugador);
+                system("cls");
 
-//Cabecera: void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
+            }
+            else{
+                printf("El primer turno es para el jugador %s\n", j[1].Nomb_jugador);
+                system("cls");
+            }
+            break;
+        case 'a':
+        case 'A':
+            break;
+        default:
+            printf("No es una opcion valida\n\n");
+            break;
+    }
+   
+}
+//Cabecera: void Contadores_Resumen(Jugador *j,registro_configuracion* reg,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
 //Precondicion: Recibe el vector de estructuras, la dimensión de las matrices y vectores por referencia para los contadores del nº de aguas, casillas tocadas, hundidas, vacías y el nº de barcos hundidos y restantes
 //Postcondicion: Devuelve por referencia el nº de casillas vacías, tocadas, hundidas, aguas, barcos hundidos y no hundidos
-void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest){
+void Contadores_Resumen(Jugador *j,registro_configuracion* reg,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest){
     int i,l,m;
     for(i=0;i<N_JUG;i++){
         nvac[i]=0;
@@ -101,16 +150,12 @@ void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nh
                         nhuna[m]++;
                         break;
                 }
-                switch(j[m].Flota[i][l]){
-                    case 'x':
-                        nrest[m]++;
-                        break;
-                    case 'h':
-                        nhuno[m]++;
-                        break;
-                }
             }
         }
+    }
+    for(i=0;i<N_JUG;i++){
+        //nhuno[i]=j[i].hundidos;
+        nrest[i]=reg->n_barcos_flota-nhuno[i];
     }
     if(nrest[0]>nrest[1])
         j[0].Ganador=1;
@@ -118,18 +163,18 @@ void Contadores_Resumen(Jugador *j,int dim,int *nvac,int *nag,int *ntoc, int *nh
         j[1].Ganador=1;
     
 }
-//Cabecera: void Resumen(Jugador *j,int dim);
+//Cabecera: void Resumen(Jugador *j,registro_configuracion *reg,int dim);
 //Precondicion: recibe el vector de estructuras con los datos de cada jugador y sus tableros
 //Postcondicion: muestra por pantalla el resumen de la partida al acabar esta
-void Resumen(Jugador *j,int dim){
+void Resumen(Jugador *j,registro_configuracion *reg,int dim){
     int i,m,n,cont=1;
     int nvac[2],nag[2],ntoc[2],nhuna[2],nhuno[2],nrest[2];
-    Contadores_Resumen(j,10,nvac,nag,ntoc,nhuno,nhuna,nrest);
+    Contadores_Resumen(j,reg,dim,nvac,nag,ntoc,nhuna,nhuno,nrest);
     printf("           |          Valor de las casillas      |         Barcos        |\n");
     printf("Jugador    |Disparos|Vacias|Agua|Tocadas|Hundidas|Hundidos|Restan|Ganador|\n");
     printf("-----------|--------|------|----|-------|--------|--------|------|-------|\n");
-    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[0].Nomb_jugador,j[0].Num_disp,nvac[0],nag[0],ntoc[0],nhuna[0],nhuno[0],j[0].Ganador);
-    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[1].Nomb_jugador,j[1].Num_disp,nvac[1],nag[1],ntoc[1],nhuna[1],nhuno[1],j[1].Ganador);
+    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[0].Nomb_jugador,j[0].Num_disp,nvac[0],nag[0],ntoc[0],nhuna[0],nhuno[0],nrest[0],j[0].Ganador);
+    printf("%s   |      %d|    %d|  %d|     %d|      %d|      %d|    %d|     %d|\n",j[1].Nomb_jugador,j[1].Num_disp,nvac[1],nag[1],ntoc[1],nhuna[1],nhuno[1],nrest[1],j[1].Ganador);
     printf("\n\n");
     for(i=0;i<N_JUG;i++){
         printf("Jugador %d:     FLOTA                               OPONENTE\n",i+1);
@@ -160,10 +205,10 @@ void Resumen(Jugador *j,int dim){
     system("pause");
     system("cls");
 }
-//Cabecera: void Reiniciar_Partida(Jugador *j,int dim);
+//Cabecera: void Reiniciar_Partida(Jugador *j,registro_configuracion *reg,int dim);
 //Precondicion: recibe el vector de estructuras con los datos de ambos jugadores y la dimension de los tableros
 //Postcondicion: elimina el nº de disparos, si es ganador o no y resetea los tableros de cada jugador
-void Reiniciar_Partida(Jugador *j,int dim){
+void Reiniciar_Partida(Jugador *j,registro_configuracion *reg,int dim){
     int i,p,u;
     for(i=0;i<N_JUG;i++){
         j[i].Num_disp=0;
@@ -177,48 +222,10 @@ void Reiniciar_Partida(Jugador *j,int dim){
     }
 }
 //Cabecera:
-//Precondicion:
-//Postcondicion:
-void Jugar_Partida(Jugador *j,int dim){
-    int i,k,cont_p=1;
-    char op_partida;
-    for(i=0;i<N_JUG;i++){
-        j[i].Num_disp=0;
-        j[i].Ganador=0;
-        printf("Introduce el nombre del jugador %d: ",i+1);
-        fgets(j[i].Nomb_jugador,20,stdin);
-        elimina(j[i].Nomb_jugador);
-        printf("\n");
-    }
-    printf("Desea generar los tableros manualmente o de forma aleatoria? (m/a)\n");
-    printf("->");
-    scanf(" %c",&op_partida);
-    switch(op_partida){
-        case 'm':
-        case 'M':
-            printf("Ha seleccionado generar los tableros manualmente\n\n");
-            for(i=0;i<N_JUG;i++){
-                inicializar_matriz(j[i].Flota,dim);
-                inicializar_matriz(j[i].Oponente,dim);
-            }
-            for(i=0;i<N_JUG; i++){
-                printf("Jugador %d - Tablero de Flota\n", i+1);
-                imprimir_matriz(j[i].Flota, dim);
-                printf("\n");
-            
-                printf("Jugador %d - Tablero de Oponente\n", i+1);
-                imprimir_matriz(j[i].Oponente, dim);
-                printf("\n\n");
-            }
-            break;
-        case 'a':
-        case 'A':
-            break;
-        default:
-            printf("No es una opcion valida\n\n");
-            break;
-    }
-   
+//Precondicion: 
+//Postcondicion: 
+void colocar_barcos(Jugador *j){
+
 }
 //Cabecera:void imprimir_matriz(char **m,int dim);
 //Precondicion: recibe una matriz de caracteres inicializada y su dimensión
