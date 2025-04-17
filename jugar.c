@@ -225,7 +225,7 @@ void Reiniciar_Partida(Jugador *j,registro_configuracion *reg,int dim){
 //Precondicion: 
 //Postcondicion: 
 void colocar_barcos(Jugador *j){
-
+    
 }
 //Cabecera:void imprimir_matriz(char **m,int dim);
 //Precondicion: recibe una matriz de caracteres inicializada y su dimensión
