@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "jugar.h"
 #include "Estructuras.h"
 #include "configuracion.h"
@@ -224,8 +225,12 @@ void Reiniciar_Partida(Jugador *j,registro_configuracion *reg,int dim){
 //Cabecera:
 //Precondicion: 
 //Postcondicion: 
-void colocar_barcos(Jugador *j){
-    
+void colocar_barcos(Jugador *j, registro_configuracion *r){
+    printf("Empieza el jugador %s\n",j[r->comienzo]->Nomb_jugador);
+    for(i=0;i<N_JUG;i++){
+        if()
+        printf("\nAhora le toca al jugador %s\n",j[!r->comienzo]->Nomb_jugador);
+    }
 }
 //Cabecera:void imprimir_matriz(char **m,int dim);
 //Precondicion: recibe una matriz de caracteres inicializada y su dimensión
