@@ -5,7 +5,7 @@
 #include "jugar.h"
 #include "Estructuras.h"
 #include "configuracion.h"
-void Jugar(Jugador *,registro_configuracion *);
+void Jugar(Jugador* , registro_configuracion* , Barcos* );
 void Liberar_Memoria(char ***, int );
 void Reserva_Memoria(char ***,int );
 void imprimir_matriz(char **,int );
@@ -16,14 +16,15 @@ void Resumen(Jugador* , registro_configuracion* );
 void Jugar_Partida(Jugador* , registro_configuracion* , Barcos* );
 void reiniciar_partida(Jugador *,registro_configuracion *);
 void Contadores_Resumen(Jugador* ,registro_configuracion* );
-void mostrar_tablero(char **tablero, int t_tablero);
+void mostrar_tablero(char **, int );
+//revisar estas ultimas 2, de colocacion de barcos
 void colocar_barcos(Jugador *, registro_configuracion *, Barcos *);
 int posicion_valida(char **matriz, int fila, int col, int tam, int orientacion, int dim);
 
 //Cabecera: void Jugar(Jugador* jugadores, registro_configuracion* config);
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: menu previo al comienzo de la partida
-void Jugar(Jugador *j,registro_configuracion *reg){
+void Jugar(Jugador* jugadores, registro_configuracion* config, Barcos* barcos){
     int opc_menu;
     do{
         printf("-----Jugar partida-----\n\n");
@@ -40,7 +41,7 @@ void Jugar(Jugador *j,registro_configuracion *reg){
                 Jugar_Partida(jugadores,config,barcos);
                 break;
             case 2:
-                Reiniciar_Partida(jugadores,config);
+                reiniciar_partida(jugadores,config);
                 break;
             case 3:
                 Resumen(jugadores,config);
@@ -58,177 +59,100 @@ void Jugar(Jugador *j,registro_configuracion *reg){
 //Cabecera: void Jugar_Partida(Jugador* jugadores, registro_configuracion* config)
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: menu para jugar la partida
-void Jugar_Partida(Jugador* jugadores, registro_configuracion* config, Barcos* barcos){//dim para probar
-    int i,k,cont_p=1;
-    char op_partida;
-    printf("Desea generar los tableros manualmente o de forma aleatoria? (m/a)\n");
-    printf("->");
-    scanf(" %c",&op_partida);
-    switch(op_partida){
+void Jugar_Partida(Jugador* jugadores, registro_configuracion* config, Barcos* barcos){
+    char c;
+    do{
+        printf("Desea generar los tableros de forma manual o de forma aleatoria:\n");
+        printf("    - Pulse 'm' si desea construirlos de forma manual.\n");
+        printf("    - Pulse 'a' si desea construirlos de forma aleatoria.\n\n");
+        printf("    -> ");
+        scanf(" %c",&c);
+        if(c!='a' && c!='m'){
+            system("cls");
+            printf("Opcion no valida...\n");
+            printf("Por favor introduzca una opcion valida...\n\n");
+        }
+    }while(c!='a' && c!='m');
+    system("cls");
+    switch(c){
         case 'm':
-        case 'M':
-            printf("Ha seleccionado generar los tableros manualmente\n\n");
-            for(i=0;i<N_JUG;i++){
-                inicializar_matriz(j[i].Flota,dim);
-                inicializar_matriz(j[i].Oponente,dim);
+            system("cls");
+            printf("Ha seleccionado generar los tableros de forma manual.\n\n");
+            // aqui va la funcion colocacion_de_barcos
+            colocar_barcos(jugadores,config,barcos);
+            system("cls");
+            // aqui va la funcion partida
+            system("cls");
+            if(jugadores[0].Ganador==1 || jugadores[1].Ganador==1){
+                Resumen(jugadores,config); // una vez terminada la partida se mostrara un resumen
+                guardar(jugadores,2,config,barcos);
             }
-            for(i=0;i<N_JUG; i++){
-                printf("Jugador %d - Tablero de Flota\n", i+1);
-                imprimir_matriz(j[i].Flota, dim);
-                printf("\n");
-            
-                printf("Jugador %d - Tablero de Oponente\n", i+1);
-                imprimir_matriz(j[i].Oponente, dim);
-                printf("\n\n");
-            }
-            printf("Pulse cualquier tecla para continuar:\n");
-            printf("->\n\n");
-            colocar_barcos(j,reg,b);
             break;
         case 'a':
-        case 'A':
-            printf("No implementado\n");
-            break;
-        default:
-            printf("No es una opcion valida\n\n");
+            system("cls");
+            printf("Esta opcion no esta disponible temporalmente.\n\n");
             break;
     }
-   
 }
-//Cabecera:
-//Precondicion: 
+//Cabecera: void colocar_barcos(Jugador *jugadores, registro_configuracion *config, Barcos *barcos);
+//Precondicion: recibe el numero de barcos de cada tipo y el tablero de cada jugador
 //Postcondicion: coloca los barcos en el tablero de cada jugador
-void colocar_barcos(Jugador *j, registro_configuracion *r, Barcos *b){
-    /*int i,l,orientacion,f,c;
-    printf("Empieza el jugador %s\n",j[r->comienzo].Nomb_jugador);
-    for(i=0;i<r->n_barcos_flota;i++){
-        do{
-            printf("Desea colocarlo de manera vertical, horizontal, diagonal izquierda o diagonal derecha?\n");
-            printf("1. Vertical\n");
-            printf("2. Horizontal\n");
-            printf("3. Diagonal izquierda\n");
-            printf("4. Diagonal derecha\n");
-            printf("->");
-            scanf("%d",&orientacion);
-            fflush(stdin);
-        }while(orientacion<1 || orientacion>4);
+void colocar_barcos(Jugador *jugadores, registro_configuracion *config, Barcos *barcos){
+    int jugador_actual, tipo, cantidad, orientacion, fila, col;
+    int i, f, c, colocado;
+    int df[] = {1, 0, 1, 1};     // desplazamientos fila: vertical, horizontal, diagonal izq, diagonal der
+    int dc[] = {0, 1, -1, 1};    // desplazamientos columna
 
-        printf("Introduzca la fila y la columna donde desea colocar el barco\n");
-        printf("Fila: ");
-        scanf("%d",&f);
-        fflush(stdin);
-        printf("Columna: ");
-        scanf("%d",&c);
-        fflush(stdin);
-        switch(orientacion){
-            case 1:
-                if(f+r->c_barco[i]<r->t_tablero){
-                    for(l=0;l<r->c_barco[i];l++){
-                        if(j[r->comienzo].Flota[f+l][c]=='-'){
-                            j[r->comienzo].Flota[f+l][c]='*';
-                        }else{
-                            printf("No se puede colocar el barco en esa posicion\n");
-                            break;
-                        }
-                    }
-                }else{
-                    printf("No se puede colocar el barco en esa posicion\n");
-                }
-                break;
-            case 2:
-                if(c+r->c_barco[i]<r->t_tablero){
-                    for(l=0;l<r->c_barco[i];l++){
-                        if(j[r->comienzo].Flota[f][c+l]=='-'){
-                            j[r->comienzo].Flota[f][c+l]='*';
-                        }else{
-                            printf("No se puede colocar el barco en esa posicion\n");
-                            break;
-                        }
-                    }
-                }else{
-                    printf("No se puede colocar el barco en esa posicion\n");
-                }
-                break;
-            case 3:
-                if(f+r->c_barco[i]<r->t_tablero && c-r->c_barco[i]>0){
-                    for(l=0;l<r->c_barco[i];l++){
-                        if(j[r->comienzo].Flota[f+l][c-l]=='-'){
-                            j[r->comienzo].Flota[f+l][c-l]='*';
-                        }else{
-                            printf("No se puede colocar el barco en esa posicion\n");
-                            break;
-                        }
-                    }
-                }else{
-                    printf("No se puede colocar el barco en esa posicion\n");
-                }
-                break;
-            case 4:
-                if(f+r->c_barco[i]<r->t_tablero && c+r->c_barco[i]<r->t_tablero){
-                    for(l=0;l<r->c_barco[i];l++){
-                        if(j[r->comienzo].Flota[f+l][c+l]=='-'){
-                            j[r->comienzo].Flota[f+l][c+l]='*';
-                        }else{
-                            printf("No se puede colocar el barco en esa posicion\n");
-                            break;
-                        }
-                    }
-                }else{
-                    printf("No se puede colocar el barco en esa posicion\n");
-                }
-                break;
-        }
-        r->c_barco[i]--;
-    }*/
-
-    
-    
-    
-    int jugador_actual = r->comienzo;
-    int tipo,cantidad,orientacion,fila,col,i,f,c,colocado;
-    for(jugador_actual=0;jugador_actual<N_JUG;jugador_actual++){
-        printf("Comienza el jugador %s\n", j[jugador_actual].Nomb_jugador);
-    
-        for (tipo = 0; tipo < r->n_barcos_flota; tipo++) {
-            for (cantidad = 0; cantidad < b[i].Tam_barco; cantidad++) {
+    for(jugador_actual = 0; jugador_actual < 2; jugador_actual++) {
+        printf("\nTurno del jugador %s\n", jugadores[jugador_actual].Nomb_jugador);
+        for (tipo = 0; tipo < config->n_tipos_barco; tipo++) {
+            for (cantidad = 0; cantidad < config->c_barco[tipo]; cantidad++) {
                 colocado = 0;
                 while (!colocado) {
-                    printf("\nColocando barco tipo %s (tamanyo: %d)\n", b[tipo].Nomb_barco, b[tipo].Tam_barco);
-        
-                    mostrar_tablero(j[jugador_actual].Flota, r->t_tablero);
-        
+                    printf("\nColocando barco '%s' de tamanyo %d (Barco %d de %d)\n", 
+                        barcos[tipo].Nomb_barco, barcos[tipo].Tam_barco, 
+                        cantidad + 1, config->c_barco[tipo]);
+
+                    mostrar_tablero(jugadores[jugador_actual].Flota, config->t_tablero);
+                    // Pedir orientación
                     do {
-                        printf("Orientacion:\n");
-                        printf("1. Vertical\n2. Horizontal\n3. Diagonal Izquierda\n4. Diagonal Derecha\n-> ");
+                        printf("Elige orientacion:\n");
+                        printf("  1. Vertical\n");
+                        printf("  2. Horizontal\n");
+                        printf("  3. Diagonal izquierda (↙)\n");
+                        printf("  4. Diagonal derecha (↘)\n");
+                        printf("-> ");
                         scanf("%d", &orientacion);
-                        orientacion--;  // de 0 a 3
+                        orientacion--;
                     } while (orientacion < 0 || orientacion > 3);
-        
+                    // Pedir coordenadas
                     printf("Fila inicial: ");
                     scanf("%d", &fila);
                     printf("Columna inicial: ");
                     scanf("%d", &col);
-        
-                    if (posicion_valida(j[jugador_actual].Flota, fila, col, b[tipo].Tam_barco, orientacion, r->t_tablero)) {
-                        for (i = 0; i < b[tipo].Tam_barco; i++) {
-                            f = fila + i * (orientacion == 0 || orientacion == 2 || orientacion == 3);
-                            c = col + i * (orientacion == 1 || orientacion == 3) - i * (orientacion == 2);
-                            j[jugador_actual].Flota[f][c] = '*';
+                    if (posicion_valida(jugadores[jugador_actual].Flota, fila, col, barcos[tipo].Tam_barco, orientacion, config->t_tablero)) {
+                        // Colocar barco
+                        for (i = 0; i < barcos[tipo].Tam_barco; i++) {
+                            f = fila + i * df[orientacion];
+                            c = col + i * dc[orientacion];
+                            jugadores[jugador_actual].Flota[f][c] = '*';
                         }
                         printf("Barco colocado correctamente.\n");
                         colocado = 1;
                     } else {
-                        printf("No se puede colocar el barco ahí. Inténtalo de nuevo.\n");
+                        printf("No se puede colocar el barco ahi. Intenta otra posicion.\n");
                     }
                 }
             }
         }
-        
-            // Mostramos tablero final
-            printf("\nTablero final del jugador %s:\n", j[jugador_actual].Nomb_jugador);
-            mostrar_tablero(j[jugador_actual].Flota, r->t_tablero);
+        printf("\nTablero final del jugador %s:\n", jugadores[jugador_actual].Nomb_jugador);
+        mostrar_tablero(jugadores[jugador_actual].Flota, config->t_tablero);
+        system("cls");
     }
 }
+//Cabecera: void mostrar_tablero(char **tablero, int t_tablero);
+//Precondicion: recibe una matriz de caracteres inicializada y su dimensión
+//Postcondicion: muestra el tablero por pantalla
 void mostrar_tablero(char **tablero, int t_tablero) {
     int i,l;
     printf("    ");
@@ -245,8 +169,10 @@ void mostrar_tablero(char **tablero, int t_tablero) {
         printf("\n");
     }
 }
-// Verifica si se puede colocar el barco en la posición deseada con separación
-int posicion_valida(char **matriz, int fila, int col, int tam, int orientacion, int dim) {
+//Cabecera: int posicion_valida(char **matriz, int fila, int col, int tam, int orientacion, int dim);
+//Precondicion: recibe el tablero, las coordenadas, el tamañom del barco, la orientacion y la dimension del tablero
+//Postcondicion: Comprueba si se puede colocar el barco en la posición introducida por el usuario
+int posicion_valida(char **matriz, int fila, int col, int tam, int orientacion, int dim){
     int df[] = {1, 0, 1, 1};  // vertical, horizontal, diag izq, diag der
     int dc[] = {0, 1, -1, 1};
     int i,f,c,x,y,nf,nc;
@@ -307,7 +233,7 @@ void Contadores_Resumen(Jugador* jugadores,registro_configuracion* config){
 //Postcondicion: muestra por pantalla el resumen de la partida
 void Resumen(Jugador* jugadores, registro_configuracion* config){
     int i, j, salir;
-    inicializar_tablero(jugadores,config);
+    //inicializar_tablero(jugadores,config);
     Contadores_Resumen(jugadores,config);
     printf("Resumen de la partida:\n\n");
     printf("    - Jugador 1: %s\n", jugadores[0].Nomb_jugador);
@@ -372,8 +298,6 @@ void Resumen(Jugador* jugadores, registro_configuracion* config){
     fflush(stdin);
     system("cls");
 }
-
-
 //Cabecera: void reiniciar_partida(Jugador *jugadores,registro_configuracion *config)
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: inicializa los valores de todas las variables incluidos los tableros

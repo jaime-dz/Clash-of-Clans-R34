@@ -3,12 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #define N_JUG 2
-
-// Este codigo es de Luis
-
 typedef struct{
     char Nomb_barco [20];
-    char Id_barco;
+    char Id_barco[1];
     int Tam_barco;
 }Barcos;
 
@@ -18,12 +15,15 @@ typedef struct{
     char Tipo_disparo;
     int Num_disp;
     int Ganador;
+    int barcos_hundidos;
     char **Flota;
-    char **Oponente;  //oponente [][]
-    Barcos *barco;
+    char **Oponente;
+    int vacias;
+    int aguas;
+    int tocadas;
+    int hundidas;
+    int restan;
 }Jugador;
-
-// Este codigo es mio
 
 typedef struct{
 
@@ -31,29 +31,13 @@ typedef struct{
     int comienzo;  // jugador que comienza la partida
     int n_barcos_flota;
     int n_tipos_barco;
-    // Cambios a la hora de contar barcos
-    int P; // cantidad de portaaviones
-    int A; // cantidad de acorazados
-    int C; // cantidad de cruceros
-    int D; // cantidad de destructores
-    int F; // cantidad de fragatas
-    int S; // cantidad de submarinos
-
-    char* id_barco;
     int* c_barco;
 
 }registro_configuracion;
 
-
-
-//Cabecera: void escribir_barco (Barcos *bar)
-//Precondicion: Recibe la estructura barcos ya inicializada
-//Postcondicion: Escribe en el fichero barcos.txt
-void escribir_barco (Barcos *bar);
-
 //Cabecera: void escribir_jugador (Jugador *jug, int n, int tam)
 //Precondicion: inicializar la estructura jugador
 //Postcondicion: escribe en un fichero los datos de configuracion de los jugadores
-void escribir_jugador (Jugador *jug, int n, int tam, registro_configuracion*);
+void guardar (Jugador *jug, int n, registro_configuracion*, Barcos* barcos);
 
 #endif

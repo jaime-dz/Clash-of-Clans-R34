@@ -5,7 +5,7 @@
 //Cabecera: void Jugar(Jugador* jugadores, registro_configuracion* config);
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: menu previo al comienzo de la partida
-void Jugar(Jugador *,registro_configuracion *);
+void Jugar(Jugador* , registro_configuracion* , Barcos* );
 
 //Cabecera: void Jugar_Partida(Jugador* jugadores, registro_configuracion* config)
 //Precondicion: inicializar los valores de las estructuras jugadores y config
@@ -56,5 +56,10 @@ void inicializar_tablero(Jugador* , registro_configuracion* );
 //Precondicion: inicializar la longitud del tablero
 //Postcondicion: genera una matriz dinamica sin inicializar
 void generar_matriz_dinamica(char*** , int );
+
+//Cabecera: void mostrar_tablero(char **tablero, int t_tablero);
+//Precondicion: recibe una matriz de caracteres inicializada y su dimensión
+//Postcondicion: muestra el tablero por pantalla
+void mostrar_tablero(char **, int );
 
 #endif

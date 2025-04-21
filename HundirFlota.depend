@@ -1,0 +1,51 @@
+# depslib dependency file v1.0
+1745052259 source:c:\users\becer\desktop\proyecto_mp\hundirflota\configuracion.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<time.h>
+	<math.h>
+	"configuracion.h"
+	"Estructuras.h"
+	"CargaDatos.h"
+	"Jugar.h"
+
+1745057285 c:\users\becer\desktop\proyecto_mp\hundirflota\configuracion.h
+	"Estructuras.h"
+
+1744918411 source:c:\users\becer\desktop\proyecto_mp\hundirflota\estructuras.c
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	"Estructuras.h"
+	"CargaDatos.h"
+
+1744912479 c:\users\becer\desktop\proyecto_mp\hundirflota\estructuras.h
+	<stdlib.h>
+	<stdio.h>
+
+1745056014 source:c:\users\becer\desktop\proyecto_mp\hundirflota\main.c
+	<stdio.h>
+	<stdlib.h>
+	"configuracion.h"
+	"Estructuras.h"
+	"CargaDatos.h"
+	"Jugar.h"
+
+1745052479 source:c:\users\becer\desktop\proyecto_mp\hundirflota\cargadatos.c
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	"Estructuras.h"
+
+1744966820 c:\users\becer\desktop\proyecto_mp\hundirflota\cargadatos.h
+	"Estructuras.h"
+
+1745057285 source:c:\users\becer\desktop\proyecto_mp\hundirflota\jugar.c
+	<stdio.h>
+	"configuracion.h"
+	"Estructuras.h"
+	"Jugar.h"
+
+1745056162 c:\users\becer\desktop\proyecto_mp\hundirflota\jugar.h
+
