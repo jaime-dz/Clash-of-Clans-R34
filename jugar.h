@@ -2,49 +2,59 @@
 #define JUGAR_H_
 #include "Estructuras.h"
 
-//Cabecera: void Menu_Jugar(Jugador *j,int dim);
-//Precondicion: recibe el vector de estructura con los datos de los jugadores
-//Postcondicion: imprime el menu de Jugar y realiza la acción necesaria segun la opcion del usuario
-void Menu_Jugar(Jugador *,registro_configuracion *,int );
+//Cabecera: void Jugar(Jugador* jugadores, registro_configuracion* config);
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: menu previo al comienzo de la partida
+void Jugar(Jugador *,registro_configuracion *);
+
+//Cabecera: void Jugar_Partida(Jugador* jugadores, registro_configuracion* config)
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: menu para jugar la partida
+void Jugar_Partida(Jugador* , registro_configuracion* , Barcos* );
 
 //Cabecera:void Libera_Memoria(char ***m,int dim);
-//Precondicion: recibe una matriz dinamica reservada y su dimension
+//Precondicion: inicializar una matriz dinamica
 //Postcondicion: libera su memoria asignada
-void Libera_Memoria(char ***,int );
+void Liberar_Memoria(char ***, int );
 
 //Cabecera:void Reserva_Memoria(char ***m,int dim);
 //Precondicion:recibe una matriz dinamica sin reservar y su dimension
 //Postcondicion:reserva memoria para la matriz
 void Reserva_Memoria(char ***,int );
 
-//Cabecera:void inicializar_matriz(char **,int );
-//Precondicion: recibe una matriz cuadrada dinamica sin inicializar y su dimensión
-//Postcondicion:inicializa las matrices a sus valores nulos antes de colocar los barcos
-void inicializar_matriz(char **,int );
-
 //Cabecera:void imprimir_matriz(char **m,int dim);
 //Precondicion: recibe una matriz de caracteres inicializada y su dimensión
 //Postcondicion: la imprime por pantalla
 void imprimir_matriz(char **,int );
 
-//Cabecera: void Reiniciar_Partida(Jugador *j,registro_configuracion *reg,int dim);
-//Precondicion: recibe el vector de estructuras con los datos de ambos jugadores y la dimension de los tableros
-//Postcondicion: elimina el nº de disparos, si es ganador o no y resetea los tableros de cada jugador
-void Reiniciar_Partida(Jugador *j,registro_configuracion *reg,int dim);
+//Cabecera: void reiniciar_partida(Jugador *jugadores,registro_configuracion *config)
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: inicializa los valores de todas las variables incluidos los tableros
+void reiniciar_partida(Jugador *,registro_configuracion *);
 
-//Cabecera: void Resumen(Jugador *j,registro_configuracion *reg,int dim);
-//Precondicion: recibe el vector de estructuras con los datos de cada jugador y sus tableros
-//Postcondicion: muestra por pantalla el resumen de la partida al acabar esta
-void Resumen(Jugador *j,registro_configuracion *reg,int dim);
+//Cabecera: void Resumen(Jugador* jugadores, registro_configuracion* config)
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: muestra por pantalla el resumen de la partida
+void Resumen(Jugador* , registro_configuracion* );
 
-//Cabecera: void Contadores_Resumen(Jugador *j,registro_configuracion* reg,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
-//Precondicion: Recibe el vector de estructuras, la dimensión de las matrices y vectores por referencia para los contadores del nº de aguas, casillas tocadas, hundidas, vacías y el nº de barcos hundidos y restantes
-//Postcondicion: Devuelve por referencia el nº de casillas vacías, tocadas, hundidas, aguas, barcos hundidos y no hundidos
-void Contadores_Resumen(Jugador *j,registro_configuracion* reg,int dim,int *nvac,int *nag,int *ntoc, int *nhuna,int *nhuno, int *nrest);
+//Cabecera: void Contadores_Resumen(Jugador* jugadores,registro_configuracion* config);
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: devuelve el numero de casillas de cada tipo
+void Contadores_Resumen(Jugador* ,registro_configuracion* );
 
 //Cabecera:void elimina(char *c1);
 //Precondicion: recibe una cadena de caracteres inicializada
 //Postcondicion: elimina el salto de línea de la cadena introducido por fgets
 void elimina(char *c1);
+
+//Cabecera: void inicializar_tablero(Jugador* jugadores, registro_configuracion* config)
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: inicializa los tableros de juego de ambos jugadores
+void inicializar_tablero(Jugador* , registro_configuracion* );
+
+//Cabecera: void generar_matriz_dinamica(char*** matriz, int longitud)
+//Precondicion: inicializar la longitud del tablero
+//Postcondicion: genera una matriz dinamica sin inicializar
+void generar_matriz_dinamica(char*** , int );
 
 #endif
