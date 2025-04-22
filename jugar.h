@@ -2,15 +2,20 @@
 #define JUGAR_H_
 #include "Estructuras.h"
 
+//Cabecera: void colocacion_barcos(Jugador* jugadores, registro_configuracion* config, Barcos* barcos)
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion:
+void colocacion_barcos(Jugador* , registro_configuracion* , Barcos* );
+
 //Cabecera: void Jugar(Jugador* jugadores, registro_configuracion* config);
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: menu previo al comienzo de la partida
 void Jugar(Jugador* , registro_configuracion* , Barcos* );
 
-//Cabecera: void Jugar_Partida(Jugador* jugadores, registro_configuracion* config)
+//Cabecera: void jugar_partida(Jugador* jugadores, registro_configuracion* config)
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: menu para jugar la partida
-void Jugar_Partida(Jugador* , registro_configuracion* , Barcos* );
+void jugar_partida(Jugador* jugadores, registro_configuracion* config);
 
 //Cabecera:void Libera_Memoria(char ***m,int dim);
 //Precondicion: inicializar una matriz dinamica

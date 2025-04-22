@@ -13,53 +13,57 @@ void elimina(char *);
 void inicializar_tablero(Jugador* , registro_configuracion* );
 void generar_matriz_dinamica(char*** , int );
 void Resumen(Jugador* , registro_configuracion* );
-void Jugar_Partida(Jugador* , registro_configuracion* , Barcos* );
+void jugar_partida(Jugador* , registro_configuracion* );
 void reiniciar_partida(Jugador *,registro_configuracion *);
 void Contadores_Resumen(Jugador* ,registro_configuracion* );
 void mostrar_tablero(char **, int );
-//revisar estas ultimas 2, de colocacion de barcos
+void colocacion_barcos(Jugador* , registro_configuracion* , Barcos* );
 void colocar_barcos(Jugador *, registro_configuracion *, Barcos *);
-int posicion_valida(char **matriz, int fila, int col, int tam, int orientacion, int dim);
+int posicion_valida(char **, int , int , int , int , int );
 
 //Cabecera: void Jugar(Jugador* jugadores, registro_configuracion* config);
 //Precondicion: inicializar los valores de las estructuras jugadores y config
 //Postcondicion: menu previo al comienzo de la partida
 void Jugar(Jugador* jugadores, registro_configuracion* config, Barcos* barcos){
-    int opc_menu;
+    int c;
     do{
-        printf("-----Jugar partida-----\n\n");
-        printf("1.Jugar partida\n");
-        printf("2.Reiniciar partida\n");
-        printf("3.Resumen\n");
-        printf("4.Volver\n");
-        printf("->");
-        scanf("%d",&opc_menu);
+        printf("---------- Jugar Partida ----------\n\n");
+        printf("    1. Colocar Barcos\n");
+        printf("    2. Jugar Partida\n");
+        printf("    3. Reiniciar partida\n");
+        printf("    4. Resumen\n");
+        printf("    5. Volver\n\n");
+        printf("    -> ");
+        scanf("%i",&c);
         fflush(stdin);
         system("cls");
-        switch(opc_menu){
+        switch(c){
             case 1:
-                Jugar_Partida(jugadores,config,barcos);
+                colocacion_barcos(jugadores,config,barcos);
                 break;
             case 2:
-                reiniciar_partida(jugadores,config);
+                jugar_partida(jugadores,config);
                 break;
             case 3:
-                Resumen(jugadores,config);
+                reiniciar_partida(jugadores,config);
                 break;
             case 4:
+                Resumen(jugadores, config);
+                break;
+            case 5:
                 break;
             default:
                 system("cls");
-                printf("Opcion no valida...\n\n");
+                printf("Opcion no valida...\n");
                 printf("Por favor introduzca una opcion valida...\n\n");
                 break;
         }
-    }while(opc_menu!=4);
+    }while(c!=4);
 }
-//Cabecera: void Jugar_Partida(Jugador* jugadores, registro_configuracion* config)
+//Cabecera: void colocacion_barcos(Jugador* jugadores, registro_configuracion* config, Barcos* barcos)
 //Precondicion: inicializar los valores de las estructuras jugadores y config
-//Postcondicion: menu para jugar la partida
-void Jugar_Partida(Jugador* jugadores, registro_configuracion* config, Barcos* barcos){
+//Postcondicion:
+void colocacion_barcos(Jugador* jugadores, registro_configuracion* config, Barcos* barcos){
     char c;
     do{
         printf("Desea generar los tableros de forma manual o de forma aleatoria:\n");
@@ -78,20 +82,44 @@ void Jugar_Partida(Jugador* jugadores, registro_configuracion* config, Barcos* b
         case 'm':
             system("cls");
             printf("Ha seleccionado generar los tableros de forma manual.\n\n");
-            // aqui va la funcion colocacion_de_barcos
             colocar_barcos(jugadores,config,barcos);
             system("cls");
-            // aqui va la funcion partida
-            system("cls");
-            if(jugadores[0].Ganador==1 || jugadores[1].Ganador==1){
-                Resumen(jugadores,config); // una vez terminada la partida se mostrara un resumen
-                guardar(jugadores,2,config,barcos);
-            }
             break;
         case 'a':
             system("cls");
             printf("Esta opcion no esta disponible temporalmente.\n\n");
             break;
+    }
+}
+//Cabecera: void jugar_partida(Jugador* jugadores, registro_configuracion* config)
+//Precondicion: inicializar los valores de las estructuras jugadores y config
+//Postcondicion: menu para jugar la partida
+void jugar_partida(Jugador* jugadores, registro_configuracion* config){
+
+    int turno;
+    system("cls");
+    if(config->comienzo==1){
+        printf("El primer turno es para %s.\n\n", jugadores[0].Nomb_jugador);
+        turno=config->comienzo;
+    }else{
+        printf("El primer turno es para %s.\n", jugadores[1].Nomb_jugador);
+        turno=config->comienzo;
+    }
+    while(jugadores[0].Ganador!=1 && jugadores[1].Ganador!=1){
+        if(turno==1){
+            mostrar_tablero(jugadores[0].Flota, config->t_tablero);
+            if(jugadores[0].Tipo_disparo=='a') disparo_automatico(jugadores,*config,config->t_tablero);
+            if(jugadores[0].Tipo_disparo=='m') disparo_manual(jugadores,*config,config->t_tablero);
+            turno=2;
+            if(jugadores[0].barcos_hundidos==config->n_barcos_flota) jugadores[0].Ganador=1;
+        }
+        if(turno==2){
+            mostrar_tablero(jugadores[0].Flota, config->t_tablero);
+            if(jugadores[1].Tipo_disparo=='a') disparo_automatico(jugadores,*config,config->t_tablero);
+            if(jugadores[1].Tipo_disparo=='m') disparo_manual(jugadores,*config,config->t_tablero);
+            turno=1;
+            if(jugadores[1].barcos_hundidos==config->n_barcos_flota) jugadores[0].Ganador=1;
+        }
     }
 }
 //Cabecera: void colocar_barcos(Jugador *jugadores, registro_configuracion *config, Barcos *barcos);
@@ -190,7 +218,7 @@ int posicion_valida(char **matriz, int fila, int col, int tam, int orientacion, 
                 nf = f + x;
                 nc = c + y;
                 if (nf >= 0 && nf < dim && nc >= 0 && nc < dim) {
-                    if (matriz[nf][nc] == '*')
+                    if (matriz[nf][nc] == 'x')
                         return 0;
                 }
             }
