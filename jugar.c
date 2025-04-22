@@ -7,7 +7,6 @@
 #include "configuracion.h"
 void Jugar(Jugador* , registro_configuracion* , Barcos* );
 void Liberar_Memoria(char ***, int );
-void Reserva_Memoria(char ***,int );
 void imprimir_matriz(char **,int );
 void elimina(char *);
 void inicializar_tablero(Jugador* , registro_configuracion* );
@@ -340,7 +339,6 @@ void reiniciar_partida(Jugador *jugadores,registro_configuracion *config){
                 jugadores[i].Flota[j][k]='-';
                 jugadores[i].Oponente[j][k]='-';
             }
-
         }
     }
 }
@@ -367,24 +365,7 @@ void Liberar_Memoria(char ***matriz, int longitud){
     free(*matriz);
     *matriz=NULL;
 }
-//Cabecera:void Reserva_Memoria(char ***m,int dim);
-//Precondicion:recibe una matriz dinamica sin reservar y su dimension
-//Postcondicion:reserva memoria para la matriz
-void Reserva_Memoria(char ***m,int dim){
-    int i;
-    *m=(char**)malloc(dim*sizeof(char*));
-    if(*m==NULL){
-        printf("Error, no se pudo asignar memoria para las filas\n");
-        exit(1);
-    }
-    for(i=0;i<dim;i++){
-        (*m)[i]=(char*)malloc(dim*sizeof(char));
-        if((*m)[i]==NULL){
-            printf("Error, no se ha podido asignar memoria\n");
-            exit(1);
-        }
-    }
-}
+
 //Cabecera: void generar_matriz_dinamica(char*** matriz, int longitud)
 //Precondicion: inicializar la longitud del tablero
 //Postcondicion: genera una matriz dinamica sin inicializar

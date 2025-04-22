@@ -22,11 +22,6 @@ void jugar_partida(Jugador* jugadores, registro_configuracion* config);
 //Postcondicion: libera su memoria asignada
 void Liberar_Memoria(char ***, int );
 
-//Cabecera:void Reserva_Memoria(char ***m,int dim);
-//Precondicion:recibe una matriz dinamica sin reservar y su dimension
-//Postcondicion:reserva memoria para la matriz
-void Reserva_Memoria(char ***,int );
-
 //Cabecera:void imprimir_matriz(char **m,int dim);
 //Precondicion: recibe una matriz de caracteres inicializada y su dimensión
 //Postcondicion: la imprime por pantalla
